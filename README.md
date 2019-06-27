@@ -14,4 +14,4 @@ Install with Cordova cli
 
 ![alt text](https://www.texboost.pt/imgs/logo.svg "Project Logo")
 
-This project has received funding from the Portuguese’s Compete 2020 program (https://www.texboost.pt).
+This project has received funding from the Compete 2020 program (https://www.texboost.pt).
