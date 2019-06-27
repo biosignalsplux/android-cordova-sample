@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="info.plux.android.cordova.sample" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>PLUX Cordova Sample</name>
+    <description>
+        A sample Apache Cordova application that uses PLUX API.
+    </description>
+    <author email="gtelo@plux.info" href="http://plux.info">
+        Gonçalo Telo
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.2" />
+</widget>

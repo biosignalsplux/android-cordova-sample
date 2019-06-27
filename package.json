@@ -1,0 +1,31 @@
+{
+  "name": "PLUX Android Cordova Sample App",
+  "displayName": "PLUX Cordova",
+  "version": "1.0.0",
+  "description": "A sample Apache Cordova application that uses PLUX API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "PLUX SW Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cordova-android": "^8.0.0",
+    "cordova-plugin-plux": "^1.0.6"
+  },
+  "devDependencies": {
+    "cordova-plugin-whitelist": "^1.3.3"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-plux": {}
+    },
+    "platforms": [
+      "android"
+    ]
+  }
+}
