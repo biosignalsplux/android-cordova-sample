@@ -188,7 +188,7 @@ document.getElementById("disconnectButton").onclick = function(){
     disconnect(address)
 
     //disconnect second device
-    disconnect(device2Identifier)
+    //disconnect(device2Identifier)
 }
 
 document.getElementById("startButton").onclick = function(){
@@ -215,7 +215,7 @@ document.getElementById("stopButton").onclick = function(){
     stop(address);
 
     //stop acquisition -> second device
-    // stop(device2Identifier)
+    //stop(device2Identifier)
 }
 
 //PLUX methods

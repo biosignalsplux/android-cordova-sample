@@ -8,7 +8,7 @@ PLUX's Apache Cordova Plugin sample app.
 
 Install with Cordova cli
 
-    $ cordova plugin add cordova-plugin-plux@1.0.7
+    $ cordova plugin add cordova-plugin-plux
     
 ## Acknowledgments
 
