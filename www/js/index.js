@@ -46,13 +46,24 @@ var app = {
 
 app.initialize();
 
+const device1Identifier = "88:6B:0F:4D:F7:C4";
+const device2Identifier = "88:6B:0F:94:49:C0";
+
 function enableScan(enable, timeInMs) {
     window.plux.enableScan(function(result) { console.log("enableScan: " + result);}, function(err) { console.log("enableScan: " + err)}, enable, timeInMs)
 }
 
 //callbacks
 function deviceFound(result){
+    console.log("deviceFound: " + JSON.stringify(result))
+
     var identifier = result.address
+
+    //save device1 as the main device
+    if(identifier != device1Identifier){
+        return
+    }
+
     var name = result.name
     var type = result.communication
 
@@ -107,12 +118,22 @@ function onDataAvailable(frame){
     var digitalChannels = frame.digitalChannels
     var analogChannels = frame.analogChannels
 
+    if(seqNumber % 1000 != 0){
+        return
+    }
+
     document.getElementById("results").innerHTML = JSON.stringify(frame)
 
+    console.log('On Data Available: ' + JSON.stringify(frame));
 }
 
-function onDeviceReady(){
-    document.getElementById("results").innerHTML = "Ready..."
+function onDeviceReady(deviceProperties){
+    var identifier = deviceProperties.path
+
+    document.getElementById("results").innerHTML = JSON.stringify(deviceProperties)
+
+    console.log('On Device Ready: ' + JSON.stringify(deviceProperties));
+
 
     //we're ready to start an acquisition
     //biosignalsplux
@@ -120,20 +141,39 @@ function onDeviceReady(){
     // var sources = [source1]
     //
     // start(sources, 1000);
+
+    // if(identifier == device1Identifier){
+    //     //biosignalsplux
+    //     var source1 = {"port": 11, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     var source2 = {"port": 12, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     var source3 = {"port": 13, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     var source4 = {"port": 14, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     //var source4 = {"port": 11, "nBits": 16, "channelMask":  0x07, "freqDivisor": 1}
+    //
+    //     var sources = [source1, source2, source3, source4]
+    //
+    //     start(identifier, 1000, sources);
+    //
+    //     connect(device2Identifier)
+    // }
+    // else if(identifier == device2Identifier){
+    //     var source1 = {"port": 1, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     //var source2 = {"port": 12, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     //var source3 = {"port": 13, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //     //var source4 = {"port": 14, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    //
+    //     //var sources = [source1, source2, source3, source4]
+    //     var sources = [source1]
+    //
+    //
+    //     start(identifier, 1000, sources);
+    // }
 }
 
 
 //UI methods
 document.getElementById("scan").onclick = function(){
     enableScan(true, 15000)
-}
-
-document.getElementById("scanForDeviceButton").onclick = function(){
-    console.log("scanForDeviceButton")
-
-    var address = "00:07:80:F5:74:92"
-    var sampleRate = 1000 //1000 Hz
-    scanForDevice(address, 15000, sampleRate)
 }
 
 document.getElementById("connectButton").onclick = function(){
@@ -143,48 +183,54 @@ document.getElementById("connectButton").onclick = function(){
 }
 
 document.getElementById("disconnectButton").onclick = function(){
-    disconnect()
+    var address = document.getElementById("address").innerHTML
+
+    disconnect(address)
+
+    //disconnect second device
+    disconnect(device2Identifier)
 }
 
 document.getElementById("startButton").onclick = function(){
+    var address = document.getElementById("address").innerHTML
+
     //biosignalsplux
-    var source1 = {"port": 1, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
-    var source2 = {"port": 2, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
-    var source3 = {"port": 3, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
-    var source4 = {"port": 4, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    var source1 = {"port": 11, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    var source2 = {"port": 12, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    var source3 = {"port": 13, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
+    var source4 = {"port": 14, "nBits": 16, "channelMask":  0x01, "freqDivisor": 1}
     //var source4 = {"port": 11, "nBits": 16, "channelMask":  0x07, "freqDivisor": 1}
 
     var sources = [source1, source2, source3, source4]
 
-    start(sources, 1000);
+    start(address, 1000, sources);
 
     //BITalino
     //start([1,2,3,4,5], 1000);
 }
 
 document.getElementById("stopButton").onclick = function(){
-    stop();
+    var address = document.getElementById("address").innerHTML
+
+    stop(address);
+
+    //stop acquisition -> second device
+    // stop(device2Identifier)
 }
 
 //PLUX methods
-function scanForDevice(address, timeInMs, sampleRate) {
-    console.log("scanForDevice: " + address + "; " + timeInMs + "; " + sampleRate)
-
-    window.plux.scanForDevice(function(result) { console.log("scanForDevice: " + result);}, function(err) { console.log("scanForDevice: " + err)}, address, timeInMs, sampleRate)
-}
-
 function connect(address) {
     window.plux.connect(function(result) { console.log("connect: " + result);}, function(err) { console.log("connect: " + err)}, address)
 }
 
-function disconnect() {
-    window.plux.disconnect(function(result) { console.log("disconnect: " + result);}, function(err) { console.log("v: " + err)})
+function disconnect(address) {
+    window.plux.disconnect(function(result) { console.log("disconnect: " + result);}, function(err) { console.log("v: " + err)}, address)
 }
 
-function start(analogChannels, sampleRate) {
-    window.plux.start(function(result) { console.log("start: " + result);}, function(err) { console.log("start: " + err)}, analogChannels, sampleRate)
+function start(address, sampleRate, sources) {
+    window.plux.start(function(result) { console.log("start: " + result);}, function(err) { console.log("start: " + err)}, address, sampleRate, sources)
 }
 
-function stop() {
-    window.plux.stop(function(result) { console.log("stop: " + result);}, function(err) { console.log("stop: " + err)})
+function stop(address) {
+    window.plux.stop(function(result) { console.log("stop: " + result);}, function(err) { console.log("stop: " + err)}, address)
 }
